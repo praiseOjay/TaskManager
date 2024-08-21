@@ -1,3 +1,6 @@
+// [id].js
+
+// Import necessary React and React Native components
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Platform, Image, Dimensions, Modal, TouchableOpacity } from 'react-native';
 import { TextInput, Button, Appbar, Text, IconButton } from 'react-native-paper';
@@ -10,27 +13,36 @@ import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import PDFReader from 'react-native-view-pdf';
 
+// Get screen dimensions for responsive design
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
+// Main component for editing a task
 export default function EditTaskScreen() {
+  // Initialize router and get task ID from URL params
   const router = useRouter();
   const { id } = useLocalSearchParams();
+
+  // Access task context for managing tasks and app theme
   const { tasks, updateTask, deleteTask, isDarkMode } = useTaskContext();
+
+  // State variables for managing task data and UI elements
   const [task, setTask] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [attachments, setAttachments] = useState([]);
   const [selectedAttachment, setSelectedAttachment] = useState(null);
 
-
+  // Handler for attachment press
   const handleAttachmentPress = (attachment) => {
     setSelectedAttachment(attachment);
   };
 
+  // Handler for closing attachment viewer
   const closeAttachmentViewer = () => {
     setSelectedAttachment(null);
   };
 
+  // Function to pick a document
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -48,6 +60,7 @@ export default function EditTaskScreen() {
     }
   };
 
+  // Function to pick an image
   const pickImage = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -67,12 +80,14 @@ export default function EditTaskScreen() {
     }
   };
 
+  // Function to remove an attachment
   const removeAttachment = (index) => {
     const newAttachments = [...task.attachments];
     newAttachments.splice(index, 1);
     setTask({ ...task, attachments: newAttachments });
   };
 
+  // Effect to load task data when component mounts or ID changes
   useEffect(() => {
     const foundTask = tasks.find((t) => t.id === id);
     if (foundTask) {
@@ -80,16 +95,19 @@ export default function EditTaskScreen() {
     }
   }, [id, tasks]);
 
+  // Handler for updating the task
   const handleUpdateTask = () => {
     updateTask(task);
     router.back();
   };
 
+  // Handler for deleting the task
   const handleDeleteTask = () => {
     deleteTask(task.id);
     router.back();
   };
 
+  // Handler for date change
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -104,6 +122,7 @@ export default function EditTaskScreen() {
     }
   };
 
+  // Handler for time change
   const handleTimeChange = (event, selectedTime) => {
     setShowTimePicker(false);
     if (selectedTime) {
@@ -114,10 +133,12 @@ export default function EditTaskScreen() {
     }
   };
 
+  // Return null if task is not loaded yet
   if (!task) {
     return null;
   }
 
+  // Apply dark mode styles if enabled
   const containerStyle = {
     ...styles.container,
     backgroundColor: isDarkMode ? '#121212' : '#fff',
@@ -127,13 +148,17 @@ export default function EditTaskScreen() {
     color: isDarkMode ? '#fff' : '#000',
   };
 
+  // Render the EditTaskScreen component
   return (
     <View style={containerStyle}>
+      {/* App header */}
       <Appbar.Header style={{ backgroundColor: isDarkMode ? '#1E1E1E' : '#fff' }}>
         <Appbar.BackAction onPress={() => router.back()} color={isDarkMode ? '#fff' : '#000'} />
         <Appbar.Content title="Edit Task" titleStyle={textStyle} />
       </Appbar.Header>
+
       <ScrollView style={styles.content}>
+        {/* Task title input */}
         <TextInput
           label="Title"
           value={task.title}
@@ -141,6 +166,8 @@ export default function EditTaskScreen() {
           style={styles.input}
           theme={{ colors: { text: isDarkMode ? '#fff' : '#000' } }}
         />
+
+        {/* Task description input */}
         <TextInput
           label="Description"
           value={task.description}
@@ -149,6 +176,8 @@ export default function EditTaskScreen() {
           style={styles.input}
           theme={{ colors: { text: isDarkMode ? '#fff' : '#000' } }}
         />
+
+        {/* Due date button */}
         <Button
           onPress={() => setShowDatePicker(true)}
           mode="outlined"
@@ -156,6 +185,8 @@ export default function EditTaskScreen() {
         >
           {new Date(task.dueDate).toLocaleString()}
         </Button>
+
+        {/* Date picker */}
         {showDatePicker && (
           <DateTimePicker
             value={new Date(task.dueDate)}
@@ -164,6 +195,8 @@ export default function EditTaskScreen() {
             onChange={handleDateChange}
           />
         )}
+
+        {/* Time picker */}
         {showTimePicker && (
           <DateTimePicker
             value={new Date(task.dueDate)}
@@ -172,6 +205,8 @@ export default function EditTaskScreen() {
             onChange={handleTimeChange}
           />
         )}
+
+        {/* Priority picker */}
         <View style={styles.pickerContainer}>
           <Text style={[styles.pickerLabel, textStyle]}>Priority</Text>
           <Picker
@@ -185,6 +220,8 @@ export default function EditTaskScreen() {
             <Picker.Item label="Low" value="Low" />
           </Picker>
         </View>
+
+        {/* Category picker */}
         <View style={styles.pickerContainer}>
           <Text style={[styles.pickerLabel, textStyle]}>Category</Text>
           <Picker
@@ -199,6 +236,8 @@ export default function EditTaskScreen() {
             <Picker.Item label="Other" value="Other" />
           </Picker>
         </View>
+
+        {/* Attachment buttons */}
         <View style={styles.attachmentButtons}>
           <Button mode="outlined" onPress={pickDocument} style={styles.attachmentButton}>
             Attach File
@@ -207,6 +246,8 @@ export default function EditTaskScreen() {
             Attach Image
           </Button>
         </View>
+
+        {/* Attachment preview */}
         <ScrollView horizontal style={styles.attachmentPreview}>
           {task.attachments.map((attachment, index) => (
             <View key={index} style={styles.attachmentItem}>
@@ -228,6 +269,8 @@ export default function EditTaskScreen() {
             </View>
           ))}
         </ScrollView>
+
+        {/* Update and Delete buttons */}
         <Button mode="contained" onPress={handleUpdateTask} style={styles.updateButton}>
           Update Task
         </Button>
@@ -235,6 +278,8 @@ export default function EditTaskScreen() {
           Delete Task
         </Button>
       </ScrollView>
+
+      {/* Modal for displaying attachments */}
       <Modal visible={selectedAttachment !== null} transparent={true} onRequestClose={closeAttachmentViewer}>
         <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={closeAttachmentViewer}>
@@ -264,6 +309,7 @@ export default function EditTaskScreen() {
   );
 }
 
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,

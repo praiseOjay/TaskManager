@@ -1,4 +1,6 @@
-// components/SplashScreen.js
+// SplashScreen.js
+
+// Import necessary modules and components
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -6,14 +8,22 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 const SplashScreen = () => {
   return (
     <View style={styles.container}>
+      {/* App logo */}
       <MaterialCommunityIcons name="check-circle-outline" size={80} color="white" />
+
+      {/* App title */}
       <Text style={styles.title}>Task Management App</Text>
+
+      {/* App subtitle */}
       <Text style={styles.subtitle}>Organize your tasks efficiently</Text>
+
+      {/* Loading indicator */}
       <ActivityIndicator style={styles.loader} size="large" color="white" />
     </View>
   );
 };
 
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,

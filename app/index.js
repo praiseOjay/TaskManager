@@ -1,4 +1,6 @@
-// app/index.js
+// index.js
+
+// Import necessary React and React Native components
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, SafeAreaView, Animated, Dimensions, TouchableOpacity, StatusBar, Platform, Alert, Image, Modal } from 'react-native';
 import { Text, TextInput, FAB, Card } from 'react-native-paper';
@@ -11,12 +13,15 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { format } from 'date-fns';
 import PDFReader from 'react-native-view-pdf';
 
+// Constants for layout and styling
 const DRAWER_WIDTH = Dimensions.get('window').width * 0.8;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 const EXTRA_HEADER_PADDING = 20;
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
+// Main component for the home screen
 export default function IndexScreen() {
+  // State variables and context hooks
   const [searchQuery, setSearchQuery] = useState('');
   const { tasks, toggleTaskCompletion, deleteTask, isDarkMode } = useTaskContext();
   const router = useRouter();
@@ -24,6 +29,7 @@ export default function IndexScreen() {
   const [slideAnim] = useState(new Animated.Value(-DRAWER_WIDTH));
   const [selectedAttachment, setSelectedAttachment] = useState(null);
 
+  // Effect for animating the drawer
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: isDrawerOpen ? 0 : -DRAWER_WIDTH,
@@ -32,14 +38,17 @@ export default function IndexScreen() {
     }).start();
   }, [isDrawerOpen]);
 
+  // Handler for attachment press
   const handleAttachmentPress = (attachment) => {
     setSelectedAttachment(attachment);
   };
 
+  // Handler for closing attachment viewer
   const closeAttachmentViewer = () => {
     setSelectedAttachment(null);
   };
 
+  // Handler for deleting a task
   const handleDeleteTask = (taskId) => {
     Alert.alert(
       "Delete Task",
@@ -60,6 +69,7 @@ export default function IndexScreen() {
     );
   };
 
+  // Render right swipe actions for task items
   const renderRightActions = (progress, dragX, task) => {
     const trans = dragX.interpolate({
       inputRange: [-100, 0],
@@ -85,6 +95,7 @@ export default function IndexScreen() {
     );
   };
 
+  // Render individual task item
   const renderItem = ({ item }) => (
     <Swipeable
       renderRightActions={(progress, dragX) =>
@@ -93,6 +104,7 @@ export default function IndexScreen() {
     >
       <TouchableOpacity onPress={() => router.push(`/edit-task/${item.id}`)}>
         <Card style={[styles.taskCard, { backgroundColor: isDarkMode ? '#1E1E1E' : '#fff' }]}>
+          {/* Task header with title, description, and completion toggle */}
           <View style={styles.taskHeader}>
             <View>
               <Text style={[styles.taskTitle, item.completed && styles.completedTask, { color: isDarkMode ? '#fff' : '#000' }]}>{item.title}</Text>
@@ -106,6 +118,7 @@ export default function IndexScreen() {
               />
             </TouchableOpacity>
           </View>
+          {/* Task footer with due date and priority */}
           <View style={styles.taskFooter}>
             <View style={styles.taskDate}>
               <MaterialCommunityIcons name="calendar" size={16} color="#2196F3" />
@@ -116,6 +129,7 @@ export default function IndexScreen() {
               <Text style={styles.taskPriorityText}>{item.priority}</Text>
             </View>
           </View>
+        {/* Attachments preview */}
         {item.attachments && item.attachments.length > 0 && (
           <View style={styles.attachmentsContainer}>
             {item.attachments && item.attachments.map((attachment, index) => (
@@ -141,6 +155,7 @@ export default function IndexScreen() {
     </Swipeable>
   );
 
+  // Function to get color based on task priority
   const getPriorityColor = (priority) => {
     switch (priority.toLowerCase()) {
       case 'high': return '#FF5252';
@@ -150,49 +165,61 @@ export default function IndexScreen() {
     }
   };
 
+  // Filter tasks based on search query
   const filteredTasks = tasks.filter(task =>
     task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     task.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Render the main component
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: isDarkMode ? '#121212' : '#f5f5f5' }]}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: isDarkMode ? '#121212' :'#F5F5F5' }]}>
+      <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} />
       <View style={styles.container}>
+        {/* Header with menu button and search input */}
         <View style={[styles.header, { backgroundColor: isDarkMode ? '#1E1E1E' : '#fff' }]}>
-          <TouchableOpacity onPress={toggleDrawer}>
-            <MaterialCommunityIcons name="menu" size={24} color={isDarkMode ? '#fff' : '#333'} />
+          <TouchableOpacity onPress={toggleDrawer} style={styles.menuButton}>
+            <MaterialCommunityIcons name="menu" size={24} color={isDarkMode ? '#fff' : '#000'} />
           </TouchableOpacity>
           <TextInput
             placeholder="Search tasks..."
             value={searchQuery}
             onChangeText={setSearchQuery}
-            style={[styles.searchInput, { color: isDarkMode ? '#fff' : '#333' }]}
+            style={[styles.searchInput, { backgroundColor: isDarkMode ? '#333' : '#F0F0F0', color: isDarkMode ? '#fff' : '#000' }]}
             placeholderTextColor={isDarkMode ? '#B0B0B0' : '#757575'}
           />
-          <TouchableOpacity onPress={() => setSearchQuery('')}>
-            <MaterialCommunityIcons name="close" size={24} color={isDarkMode ? '#fff' : '#333'} />
-          </TouchableOpacity>
         </View>
+
+        {/* Task list */}
         <FlatList
           data={filteredTasks}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.taskList}
+          contentContainerStyle={styles.listContent}
         />
+
+        {/* Floating Action Button for adding new task */}
         <FAB
-          style={styles.fab}
+          style={[styles.fab, { backgroundColor: isDarkMode ? '#BB86FC' : '#6200EE' }]}
           icon="plus"
           onPress={() => router.push('/add-task')}
-          color={isDarkMode ? '#fff' : '#fff'}
-          backgroundColor={isDarkMode ? '#8e44ad' : '#8e44ad'}
         />
       </View>
-      <Animated.View style={[styles.drawer, { left: slideAnim, backgroundColor: isDarkMode ? '#1E1E1E' : '#fff' }]}>
-        <CustomDrawerContent isDarkMode={isDarkMode} />
+
+      {/* Animated drawer */}
+      <Animated.View
+        style={[
+          styles.drawer,
+          {
+            transform: [{ translateX: slideAnim }],
+            backgroundColor: isDarkMode ? '#1E1E1E' : '#fff',
+          },
+        ]}
+      >
+        <CustomDrawerContent closeDrawer={closeDrawer} />
       </Animated.View>
-      {isDrawerOpen && (
-        <TouchableOpacity style={styles.overlay} onPress={toggleDrawer} activeOpacity={1} />
-      )}
+
+      {/* Modal for displaying attachments */}
       <Modal visible={selectedAttachment !== null} transparent={true} onRequestClose={closeAttachmentViewer}>
         <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={closeAttachmentViewer}>
@@ -208,6 +235,15 @@ export default function IndexScreen() {
             <PDFReader
               source={{ uri: selectedAttachment.uri }}
               style={styles.pdfViewer}
+              onLoadComplete={(numberOfPages, filePath) => {
+                console.log(`Number of pages: ${numberOfPages}`);
+              }}
+              onPageChanged={(page, numberOfPages) => {
+                console.log(`Current page: ${page}`);
+              }}
+              onError={(error) => {
+                console.log(error);
+              }}
             />
           ) : (
             <View style={styles.unsupportedFileContainer}>
@@ -222,10 +258,11 @@ export default function IndexScreen() {
   );
 }
 
+// Styles for the component
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    paddingTop: STATUSBAR_HEIGHT + EXTRA_HEADER_PADDING,
+    paddingTop: Platform.OS === 'android' ? STATUSBAR_HEIGHT : 0,
   },
   container: {
     flex: 1,
@@ -233,21 +270,30 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 10,
+    paddingTop: 10 + EXTRA_HEADER_PADDING,
     elevation: 4,
-    zIndex: 1,
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  menuButton: {
+    padding: 10,
   },
   searchInput: {
     flex: 1,
-    marginHorizontal: 16,
-    backgroundColor: 'transparent',
+    marginLeft: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
   },
-  taskList: {
+  listContent: {
     padding: 16,
   },
   taskCard: {
     marginBottom: 16,
     borderRadius: 8,
+    elevation: 4,
   },
   taskHeader: {
     flexDirection: 'row',
@@ -258,12 +304,13 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  taskDescription: {
+    fontSize: 14,
   },
   completedTask: {
     textDecorationLine: 'line-through',
-  },
-  taskDescription: {
-    marginTop: 4,
   },
   taskFooter: {
     flexDirection: 'row',
@@ -278,42 +325,17 @@ const styles = StyleSheet.create({
   },
   taskDateText: {
     marginLeft: 4,
+    fontSize: 12,
   },
   taskPriority: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 4,
+    borderRadius: 12,
   },
   taskPriorityText: {
     color: '#fff',
-    fontWeight: 'bold',
-  },
-  attachmentsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
-  },
-  attachmentItem: {
-    margin: 4,
-  },
-  attachmentImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 4,
-  },
-  attachmentFile: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-    padding: 4,
-  },
-  attachmentFileName: {
-    marginLeft: 4,
     fontSize: 12,
-    maxWidth: 80,
+    fontWeight: 'bold',
   },
   fab: {
     position: 'absolute',
@@ -324,27 +346,53 @@ const styles = StyleSheet.create({
   drawer: {
     position: 'absolute',
     top: 0,
+    left: 0,
     bottom: 0,
     width: DRAWER_WIDTH,
-    elevation: 5,
-    zIndex: 2,
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    zIndex: 1,
+    paddingTop: STATUSBAR_HEIGHT,
   },
   deleteAction: {
     backgroundColor: '#FF0000',
     justifyContent: 'center',
     alignItems: 'flex-end',
-    padding: 20,
+    paddingRight: 20,
     height: '100%',
+    width: 100,
   },
   deleteActionText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    padding: 20,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  attachmentsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  attachmentItem: {
+    width: 80,
+    height: 80,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  attachmentImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 4,
+  },
+  attachmentFile: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 4,
+  },
+  attachmentFileName: {
+    fontSize: 10,
+    marginTop: 4,
+    textAlign: 'center',
   },
   modalContainer: {
     flex: 1,
@@ -368,12 +416,11 @@ const styles = StyleSheet.create({
     height: screenHeight,
   },
   unsupportedFileContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 8,
   },
   unsupportedFileText: {
-    color: '#fff',
     fontSize: 16,
     textAlign: 'center',
   },

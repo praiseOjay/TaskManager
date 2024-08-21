@@ -1,4 +1,6 @@
-// components/CustomDrawerContent.js
+// CustomDrawerContent.js
+
+// Import necessary modules and components
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
@@ -9,19 +11,23 @@ import { Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function CustomDrawerContent(props) {
+  // Initialize router and access context hooks
   const router = useRouter();
   const { isDarkMode } = useTaskContext();
   const { closeDrawer } = useDrawer();
 
+  // Define container style with purple background
   const containerStyle = {
     ...styles.container,
     backgroundColor: '#8e44ad', // Purple background
   };
 
+  // Define text style with white color
   const textStyle = {
     color: '#fff', // White text
   };
 
+  // Handle navigation and close drawer
   const handleNavigation = (route) => {
     closeDrawer();
     router.push(route);
@@ -29,19 +35,27 @@ export default function CustomDrawerContent(props) {
 
   return (
     <DrawerContentScrollView {...props} style={containerStyle}>
+      {/* Drawer header with close button */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.closeButton} onPress={closeDrawer}>
           <Ionicons name="close" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
+
+      {/* Drawer content */}
       <View style={styles.drawerContent}>
+        {/* App logo */}
         <View style={styles.logoContainer}>
           <View style={styles.logo}>
             <Ionicons name="checkmark-circle-outline" size={40} color="#fff" />
           </View>
         </View>
+
+        {/* App title and subtitle */}
         <Text style={styles.title}>Task Management App</Text>
         <Text style={styles.subtitle}>Organize your tasks efficiently</Text>
+
+        {/* Navigation menu items */}
         <TouchableOpacity style={styles.menuItem} onPress={() => handleNavigation('/')}>
           <Ionicons name="home-outline" size={24} color="#fff" style={styles.menuIcon} />
           <Text style={styles.menuText}>Home</Text>
@@ -59,6 +73,7 @@ export default function CustomDrawerContent(props) {
   );
 }
 
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,

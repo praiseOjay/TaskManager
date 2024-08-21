@@ -1,3 +1,6 @@
+// add-task.js
+
+// Import necessary React and React Native components
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView, Platform, Image, Dimensions, Modal } from 'react-native';
 import { TextInput, Button, Appbar, Text } from 'react-native-paper';
@@ -10,11 +13,16 @@ import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import PDFReader from 'react-native-view-pdf';
 
+// Get screen dimensions for responsive design
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
+// Main component for adding a new task
 export default function AddTaskScreen() {
+  // Initialize router and access task context
   const router = useRouter();
   const { addTask, isDarkMode } = useTaskContext();
+
+  // State variables for managing task data and UI elements
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState(new Date());
@@ -25,6 +33,7 @@ export default function AddTaskScreen() {
   const [attachments, setAttachments] = useState([]);
   const [selectedAttachment, setSelectedAttachment] = useState(null);
 
+  // Function to pick a document
   const pickDocument = async () => {
     const result = await DocumentPicker.getDocumentAsync({});
     if (result.type === 'success') {
@@ -32,14 +41,17 @@ export default function AddTaskScreen() {
     }
   };
 
+  // Handler for attachment press
   const handleAttachmentPress = (attachment) => {
     setSelectedAttachment(attachment);
   };
 
+  // Handler for closing attachment viewer
   const closeAttachmentViewer = () => {
     setSelectedAttachment(null);
   };
 
+  // Function to pick an image
   const pickImage = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -56,11 +68,13 @@ export default function AddTaskScreen() {
     }
   };
 
+  // Handler for adding a new task
   const handleAddTask = () => {
     addTask({ title, description, dueDate, priority, category, attachments });
     router.back();
   };
 
+  // Handler for date change
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -71,6 +85,7 @@ export default function AddTaskScreen() {
     }
   };
 
+  // Handler for time change
   const handleTimeChange = (event, selectedTime) => {
     setShowTimePicker(false);
     if (selectedTime) {
@@ -81,6 +96,7 @@ export default function AddTaskScreen() {
     }
   };
 
+  // Apply dark mode styles if enabled
   const containerStyle = {
     ...styles.container,
     backgroundColor: isDarkMode ? '#121212' : '#fff',
@@ -90,13 +106,16 @@ export default function AddTaskScreen() {
     color: isDarkMode ? '#fff' : '#000',
   };
 
+  // Render the AddTaskScreen component
   return (
     <View style={containerStyle}>
+      {/* App header */}
       <Appbar.Header style={{ backgroundColor: isDarkMode ? '#1E1E1E' : '#fff' }}>
         <Appbar.BackAction onPress={() => router.back()} color={isDarkMode ? '#fff' : '#000'} />
         <Appbar.Content title="Add Task" titleStyle={textStyle} />
       </Appbar.Header>
       <ScrollView style={styles.content}>
+        {/* Task title input */}
         <TextInput
           label="Title"
           value={title}
@@ -104,6 +123,7 @@ export default function AddTaskScreen() {
           style={styles.input}
           theme={{ colors: { text: isDarkMode ? '#fff' : '#000' } }}
         />
+        {/* Task description input */}
         <TextInput
           label="Description"
           value={description}
@@ -112,9 +132,11 @@ export default function AddTaskScreen() {
           style={styles.input}
           theme={{ colors: { text: isDarkMode ? '#fff' : '#000' } }}
         />
+        {/* Due date button */}
         <Button onPress={() => setShowDatePicker(true)} mode="outlined" style={styles.dateButton}>
           {dueDate.toLocaleString()}
         </Button>
+        {/* Date picker */}
         {showDatePicker && (
           <DateTimePicker
             value={dueDate}
@@ -123,6 +145,7 @@ export default function AddTaskScreen() {
             onChange={handleDateChange}
           />
         )}
+        {/* Time picker */}
         {showTimePicker && (
           <DateTimePicker
             value={dueDate}
@@ -131,6 +154,7 @@ export default function AddTaskScreen() {
             onChange={handleTimeChange}
           />
         )}
+        {/* Priority picker */}
         <View style={styles.pickerContainer}>
           <Text style={[styles.pickerLabel, textStyle]}>Priority</Text>
           <Picker
@@ -144,6 +168,7 @@ export default function AddTaskScreen() {
             <Picker.Item label="Low" value="Low" />
           </Picker>
         </View>
+        {/* Category picker */}
         <View style={styles.pickerContainer}>
           <Text style={[styles.pickerLabel, textStyle]}>Category</Text>
           <Picker
@@ -158,6 +183,7 @@ export default function AddTaskScreen() {
             <Picker.Item label="Other" value="Other" />
           </Picker>
         </View>
+        {/* Attachment buttons */}
         <View style={styles.attachmentsContainer}>
           <Button onPress={pickImage} mode="outlined" style={styles.attachButton}>
             Attach Image
@@ -166,6 +192,7 @@ export default function AddTaskScreen() {
             Attach File
           </Button>
         </View>
+        {/* Attachment preview */}
         <View horizontal style={styles.attachmentsList}>
           {attachments.map((attachment, index) => (
             <TouchableOpacity
@@ -189,9 +216,11 @@ export default function AddTaskScreen() {
             </TouchableOpacity>
           ))}
         </View>
+        {/* Add task button */}
         <Button mode="contained" onPress={handleAddTask} style={styles.addButton}>
           Add Task
         </Button>
+        {/* Modal for displaying attachments */}
         <Modal visible={selectedAttachment !== null} transparent={true} onRequestClose={closeAttachmentViewer}>
           <View style={styles.modalContainer}>
             <TouchableOpacity style={styles.closeButton} onPress={closeAttachmentViewer}>
@@ -231,6 +260,7 @@ export default function AddTaskScreen() {
   );
 }
 
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,

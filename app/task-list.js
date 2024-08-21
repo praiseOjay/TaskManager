@@ -1,3 +1,6 @@
+// task-list.js
+
+// Import necessary modules and components
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, SafeAreaView, Animated, Dimensions, TouchableOpacity, StatusBar, Platform, Alert, Image, Modal } from 'react-native';
 import { Text, Card, Menu } from 'react-native-paper';
@@ -10,28 +13,35 @@ import { format } from 'date-fns';
 import { Swipeable } from 'react-native-gesture-handler';
 import PDFReader from 'react-native-view-pdf';
 
+// Define constants for layout and styling
 const DRAWER_WIDTH = Dimensions.get('window').width * 0.8;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 const EXTRA_HEADER_PADDING = 20;
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function TaskListScreen() {
+  // Access task context and router
   const { tasks, toggleTaskCompletion, filterBy, setFilterBy, sortBy, setSortBy, deleteTask, isDarkMode } = useTaskContext();
   const router = useRouter();
   const { isDrawerOpen, toggleDrawer } = useDrawer();
+
+  // State variables
   const [slideAnim] = useState(new Animated.Value(-DRAWER_WIDTH));
   const [categoryMenuVisible, setCategoryMenuVisible] = useState(false);
   const [priorityMenuVisible, setPriorityMenuVisible] = useState(false);
   const [selectedAttachment, setSelectedAttachment] = useState(null);
 
+  // Handle attachment press
   const handleAttachmentPress = (attachment) => {
     setSelectedAttachment(attachment);
   };
 
+  // Close attachment viewer
   const closeAttachmentViewer = () => {
     setSelectedAttachment(null);
   };
 
+  // Animate drawer opening/closing
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: isDrawerOpen ? 0 : -DRAWER_WIDTH,
@@ -40,6 +50,7 @@ export default function TaskListScreen() {
     }).start();
   }, [isDrawerOpen]);
 
+  // Confirm task deletion
   const confirmDelete = (taskId) => {
     Alert.alert(
       "Delete Task",
@@ -51,6 +62,7 @@ export default function TaskListScreen() {
     );
   };
 
+  // Render right swipe actions (delete button)
   const renderRightActions = (taskId) => {
     return (
       <TouchableOpacity style={styles.deleteAction} onPress={() => confirmDelete(taskId)}>
@@ -59,6 +71,7 @@ export default function TaskListScreen() {
     );
   };
 
+  // Render individual task item
   const renderItem = ({ item }) => (
     <Swipeable renderRightActions={() => renderRightActions(item.id)}>
       <TouchableOpacity onPress={() => router.push(`/edit-task/${item.id}`)}>
@@ -88,28 +101,29 @@ export default function TaskListScreen() {
             </TouchableOpacity>
           </View>
           <View horizontal style={styles.attachmentsContainer}>
-                {item.attachments && item.attachments.map((attachment, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.attachmentItem}
-                    onPress={() => handleAttachmentPress(attachment)}
-                  >
-                    {attachment.type === 'image' ? (
-                      <Image source={{ uri: attachment.uri }} style={styles.attachmentImage} />
-                    ) : (
-                      <View style={styles.attachmentFile}>
-                        <MaterialCommunityIcons name="file-document-outline" size={24} color={isDarkMode ? '#B0B0B0' : '#757575'} />
-                        <Text style={[styles.attachmentFileName, { color: isDarkMode ? '#B0B0B0' : '#757575' }]} numberOfLines={1}>{attachment.name}</Text>
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                ))}
-              </View>
+            {item.attachments && item.attachments.map((attachment, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.attachmentItem}
+                onPress={() => handleAttachmentPress(attachment)}
+              >
+                {attachment.type === 'image' ? (
+                  <Image source={{ uri: attachment.uri }} style={styles.attachmentImage} />
+                ) : (
+                  <View style={styles.attachmentFile}>
+                    <MaterialCommunityIcons name="file-document-outline" size={24} color={isDarkMode ? '#B0B0B0' : '#757575'} />
+                    <Text style={[styles.attachmentFileName, { color: isDarkMode ? '#B0B0B0' : '#757575' }]} numberOfLines={1}>{attachment.name}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
         </Card>
       </TouchableOpacity>
     </Swipeable>
   );
 
+  // Get color based on task priority
   const getPriorityColor = (priority) => {
     switch (priority.toLowerCase()) {
       case 'high': return '#FF5252';
@@ -122,12 +136,15 @@ export default function TaskListScreen() {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: isDarkMode ? '#121212' : '#f5f5f5' }]}>
       <View style={styles.container}>
+        {/* Header */}
         <View style={[styles.header, { backgroundColor: isDarkMode ? '#1E1E1E' : '#fff' }]}>
           <TouchableOpacity onPress={toggleDrawer}>
             <MaterialCommunityIcons name="menu" size={24} color={isDarkMode ? '#fff' : '#333'} />
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: isDarkMode ? '#fff' : '#000' }]}>Task List</Text>
         </View>
+
+        {/* Filter and Sort options */}
         <View style={styles.filterSortContainer}>
           <Menu
             visible={categoryMenuVisible}
@@ -161,6 +178,8 @@ export default function TaskListScreen() {
             <Menu.Item onPress={() => { setSortBy('Low'); setPriorityMenuVisible(false); }} title="Low" />
           </Menu>
         </View>
+
+        {/* Task list */}
         <FlatList
           data={tasks}
           renderItem={renderItem}
@@ -168,12 +187,18 @@ export default function TaskListScreen() {
           contentContainerStyle={styles.taskList}
         />
       </View>
+
+      {/* Animated drawer */}
       <Animated.View style={[styles.drawer, { left: slideAnim, backgroundColor: isDarkMode ? '#1E1E1E' : '#fff' }]}>
         <CustomDrawerContent isDarkMode={isDarkMode} />
       </Animated.View>
+
+      {/* Overlay when drawer is open */}
       {isDrawerOpen && (
         <TouchableOpacity style={styles.overlay} onPress={toggleDrawer} activeOpacity={1} />
       )}
+
+      {/* Modal for displaying attachments */}
       <Modal visible={selectedAttachment !== null} transparent={true} onRequestClose={closeAttachmentViewer}>
         <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={closeAttachmentViewer}>
@@ -203,6 +228,7 @@ export default function TaskListScreen() {
   );
 }
 
+// Styles for the component
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

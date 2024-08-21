@@ -1,4 +1,6 @@
-// components/TaskList.js
+// TaskList.js
+
+// Import necessary modules and components
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { List, IconButton, useTheme, Menu, Divider, Searchbar } from 'react-native-paper';
@@ -6,13 +8,16 @@ import { useTaskContext } from '../context/TaskContext';
 import { useRouter } from 'expo-router';
 
 export default function TaskList() {
+  // Access task context and router
   const { tasks, toggleTask, deleteTask, sortBy, setSortBy, filterBy, setFilterBy, searchQuery, setSearchQuery } = useTaskContext();
   const router = useRouter();
   const theme = useTheme();
 
+  // State for sort and filter menus
   const [sortMenuVisible, setSortMenuVisible] = React.useState(false);
   const [filterMenuVisible, setFilterMenuVisible] = React.useState(false);
 
+  // Render individual task item
   const renderItem = ({ item }) => (
     <List.Item
       title={item.title}
@@ -44,13 +49,17 @@ export default function TaskList() {
 
   return (
     <View style={styles.container}>
+      {/* Search bar */}
       <Searchbar
         placeholder="Search tasks"
         onChangeText={setSearchQuery}
         value={searchQuery}
         style={styles.searchBar}
       />
+
+      {/* Sort and filter menus */}
       <View style={styles.menuContainer}>
+        {/* Sort menu */}
         <Menu
           visible={sortMenuVisible}
           onDismiss={() => setSortMenuVisible(false)}
@@ -61,6 +70,8 @@ export default function TaskList() {
           <Menu.Item onPress={() => { setSortBy('priority'); setSortMenuVisible(false); }} title="Sort by Priority" />
           <Menu.Item onPress={() => { setSortBy('dueDate'); setSortMenuVisible(false); }} title="Sort by Due Date" />
         </Menu>
+
+        {/* Filter menu */}
         <Menu
           visible={filterMenuVisible}
           onDismiss={() => setFilterMenuVisible(false)}
@@ -76,6 +87,8 @@ export default function TaskList() {
           <Menu.Item onPress={() => { setFilterBy('Personal'); setFilterMenuVisible(false); }} title="Personal Tasks" />
         </Menu>
       </View>
+
+      {/* Task list */}
       <FlatList
         data={tasks}
         renderItem={renderItem}
@@ -86,6 +99,7 @@ export default function TaskList() {
   );
 }
 
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
