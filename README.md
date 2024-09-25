@@ -26,7 +26,7 @@ A cross-platform mobile application for efficient task management, developed usi
 1. Ensure you have Node.js and React Native CLI installed on your machine
 2. Clone the repository:
    ```
-   git clone (https://github.com/praiseOjay/TaskManager.git)
+   git clone https://github.com/praiseOjay/TaskManager.git
    ```
 3. Navigate to the project directory:
    ```
@@ -78,4 +78,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 Praise Ojerinola - Ojerinolapraise@gmail.com
 
-Project Link: (https://github.com/praiseOjay/TaskManager.git)
+Project Link: https://github.com/praiseOjay/TaskManager.git
