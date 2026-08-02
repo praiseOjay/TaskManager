@@ -16,10 +16,10 @@ export default function CustomDrawerContent(props) {
   const { isDarkMode } = useTaskContext();
   const { closeDrawer } = useDrawer();
 
-  // Define container style with purple background
+  // Define container style with theme background
   const containerStyle = {
     ...styles.container,
-    backgroundColor: '#8e44ad', // Purple background
+    backgroundColor: isDarkMode ? '#1E1E1E' : '#8e44ad',
   };
 
   // Define text style with white color

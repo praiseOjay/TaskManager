@@ -49,10 +49,11 @@ export default function EditTaskScreen() {
         type: '*/*',
         copyToCacheDirectory: true,
       });
-      if (result.type === 'success') {
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const file = result.assets[0];
         setTask({
           ...task,
-          attachments: [...task.attachments, { type: 'file', uri: result.uri, name: result.name }],
+          attachments: [...(task.attachments || []), { type: 'file', uri: file.uri, name: file.name }],
         });
       }
     } catch (err) {
@@ -69,10 +70,10 @@ export default function EditTaskScreen() {
         aspect: [4, 3],
         quality: 1,
       });
-      if (!result.canceled) {
+      if (!result.canceled && result.assets && result.assets.length > 0) {
         setTask({
           ...task,
-          attachments: [...task.attachments, { type: 'image', uri: result.assets[0].uri }],
+          attachments: [...(task.attachments || []), { type: 'image', uri: result.assets[0].uri, name: result.assets[0].fileName || 'Image' }],
         });
       }
     } catch (err) {
@@ -183,13 +184,13 @@ export default function EditTaskScreen() {
           mode="outlined"
           style={styles.dateButton}
         >
-          {new Date(task.dueDate).toLocaleString()}
+          {task.dueDate && !isNaN(new Date(task.dueDate).getTime()) ? new Date(task.dueDate).toLocaleString() : 'Select Due Date'}
         </Button>
 
         {/* Date picker */}
         {showDatePicker && (
           <DateTimePicker
-            value={new Date(task.dueDate)}
+            value={task.dueDate && !isNaN(new Date(task.dueDate).getTime()) ? new Date(task.dueDate) : new Date()}
             mode="date"
             display="default"
             onChange={handleDateChange}
@@ -199,7 +200,7 @@ export default function EditTaskScreen() {
         {/* Time picker */}
         {showTimePicker && (
           <DateTimePicker
-            value={new Date(task.dueDate)}
+            value={task.dueDate && !isNaN(new Date(task.dueDate).getTime()) ? new Date(task.dueDate) : new Date()}
             mode="time"
             display="default"
             onChange={handleTimeChange}

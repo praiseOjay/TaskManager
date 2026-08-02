@@ -35,9 +35,17 @@ export default function AddTaskScreen() {
 
   // Function to pick a document
   const pickDocument = async () => {
-    const result = await DocumentPicker.getDocumentAsync({});
-    if (result.type === 'success') {
-      setAttachments([...attachments, { type: 'file', uri: result.uri, name: result.name }]);
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: '*/*',
+        copyToCacheDirectory: true,
+      });
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const file = result.assets[0];
+        setAttachments([...attachments, { type: 'file', uri: file.uri, name: file.name }]);
+      }
+    } catch (err) {
+      console.error('Error picking document:', err);
     }
   };
 
@@ -60,8 +68,8 @@ export default function AddTaskScreen() {
         aspect: [4, 3],
         quality: 1,
       });
-      if (!result.canceled) {
-        setAttachments([...attachments, { type: 'image', uri: result.assets[0].uri }]);
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setAttachments([...attachments, { type: 'image', uri: result.assets[0].uri, name: result.assets[0].fileName || 'Image' }]);
       }
     } catch (err) {
       console.error('Error picking image:', err);
@@ -134,7 +142,7 @@ export default function AddTaskScreen() {
         />
         {/* Due date button */}
         <Button onPress={() => setShowDatePicker(true)} mode="outlined" style={styles.dateButton}>
-          {dueDate.toLocaleString()}
+          {dueDate && !isNaN(new Date(dueDate).getTime()) ? new Date(dueDate).toLocaleString() : 'Select Due Date'}
         </Button>
         {/* Date picker */}
         {showDatePicker && (

@@ -9,13 +9,20 @@ import { useRouter } from 'expo-router';
 
 export default function TaskList() {
   // Access task context and router
-  const { tasks, toggleTask, deleteTask, sortBy, setSortBy, filterBy, setFilterBy, searchQuery, setSearchQuery } = useTaskContext();
+  const { tasks, toggleTaskCompletion, deleteTask, sortBy, setSortBy, filterBy, setFilterBy } = useTaskContext();
+  const [searchQuery, setSearchQuery] = React.useState('');
   const router = useRouter();
   const theme = useTheme();
 
   // State for sort and filter menus
   const [sortMenuVisible, setSortMenuVisible] = React.useState(false);
   const [filterMenuVisible, setFilterMenuVisible] = React.useState(false);
+
+  // Filter tasks based on local search query
+  const displayedTasks = (tasks || []).filter(task =>
+    task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    task.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Render individual task item
   const renderItem = ({ item }) => (
@@ -25,7 +32,7 @@ export default function TaskList() {
       left={props => (
         <IconButton
           icon={item.completed ? 'check-circle' : 'circle-outline'}
-          onPress={() => toggleTask(item.id)}
+          onPress={() => toggleTaskCompletion(item.id)}
           {...props}
         />
       )}
@@ -43,7 +50,7 @@ export default function TaskList() {
           />
         </View>
       )}
-      onPress={() => router.push(`/task-details/${item.id}`)}
+      onPress={() => router.push(`/edit-task/${item.id}`)}
     />
   );
 
@@ -90,7 +97,7 @@ export default function TaskList() {
 
       {/* Task list */}
       <FlatList
-        data={tasks}
+        data={displayedTasks}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         style={styles.list}

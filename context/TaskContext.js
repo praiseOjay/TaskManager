@@ -10,10 +10,13 @@ const TaskContext = createContext();
 // Custom hook to easily access task context in other components
 export const useTaskContext = () => useContext(TaskContext);
 
-// Helper function to safely parse date strings
-const safeParse = (dateString) => {
-  if (!dateString) return null;
-  const date = new Date(dateString);
+// Helper function to safely parse date inputs (string, Date object, or null)
+const safeParse = (dateInput) => {
+  if (!dateInput) return null;
+  if (dateInput instanceof Date) {
+    return isNaN(dateInput.getTime()) ? null : dateInput;
+  }
+  const date = new Date(dateInput);
   return isNaN(date.getTime()) ? null : date;
 };
 
@@ -41,7 +44,7 @@ export const TaskProvider = ({ children }) => {
           ...task,
           createdAt: safeParse(task.createdAt),
           dueDate: safeParse(task.dueDate),
-          attachments: task.attachments || [] // Ensure attachments property exists
+          attachments: Array.isArray(task.attachments) ? task.attachments : []
         }));
         setTasks(safeTasksWithDates);
       }
@@ -63,12 +66,16 @@ export const TaskProvider = ({ children }) => {
   // Function to save tasks to AsyncStorage
   const saveTasks = async (updatedTasks) => {
     try {
-      const tasksToSave = updatedTasks.map(task => ({
-        ...task,
-        createdAt: task.createdAt ? task.createdAt.toISOString() : null,
-        dueDate: task.dueDate ? task.dueDate.toISOString() : null,
-        attachments: task.attachments || [] // Ensure attachments property exists when saving
-      }));
+      const tasksToSave = updatedTasks.map(task => {
+        const parsedCreated = safeParse(task.createdAt);
+        const parsedDue = safeParse(task.dueDate);
+        return {
+          ...task,
+          createdAt: parsedCreated ? parsedCreated.toISOString() : null,
+          dueDate: parsedDue ? parsedDue.toISOString() : null,
+          attachments: Array.isArray(task.attachments) ? task.attachments : []
+        };
+      });
       await AsyncStorage.setItem('tasks', JSON.stringify(tasksToSave));
     } catch (error) {
       console.error('Error saving tasks:', error);
@@ -77,12 +84,13 @@ export const TaskProvider = ({ children }) => {
 
   // Function to add a new task
   const addTask = (newTask) => {
+    const rawAttachments = Array.isArray(newTask.attachments) ? newTask.attachments : [];
     const taskWithSafeDates = {
       ...newTask,
       id: Date.now().toString(),
       createdAt: new Date(),
       dueDate: safeParse(newTask.dueDate),
-      attachments: newTask.attachments.map(attachment => ({
+      attachments: rawAttachments.map(attachment => ({
         type: attachment.type,
         uri: attachment.uri,
         name: attachment.name || 'Unnamed file'
@@ -95,10 +103,11 @@ export const TaskProvider = ({ children }) => {
 
   // Function to update an existing task
   const updateTask = (updatedTask) => {
+    const rawAttachments = Array.isArray(updatedTask.attachments) ? updatedTask.attachments : [];
     const taskWithSafeDates = {
       ...updatedTask,
       dueDate: safeParse(updatedTask.dueDate),
-      attachments: updatedTask.attachments.map(attachment => ({
+      attachments: rawAttachments.map(attachment => ({
         type: attachment.type,
         uri: attachment.uri,
         name: attachment.name || 'Unnamed file'

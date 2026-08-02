@@ -84,7 +84,7 @@ export default function TaskListScreen() {
                 <View style={styles.taskDate}>
                   <MaterialCommunityIcons name="calendar" size={16} color={isDarkMode ? '#64B5F6' : '#2196F3'} />
                   <Text style={[styles.taskDateText, { color: isDarkMode ? '#64B5F6' : '#2196F3' }]}>
-                    {item.dueDate ? format(new Date(item.dueDate), 'MMM d, yyyy HH:mm') : 'No due date'}
+                    {item.dueDate && !isNaN(new Date(item.dueDate).getTime()) ? format(new Date(item.dueDate), 'MMM d, yyyy HH:mm') : 'No due date'}
                   </Text>
                 </View>
                 <View style={[styles.taskPriority, { backgroundColor: getPriorityColor(item.priority) }]}>
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 8,
-    width: '130%',
+    width: '100%',
   },
   dropdown: {
     flexDirection: 'row',

@@ -122,8 +122,9 @@ export default function IndexScreen() {
           <View style={styles.taskFooter}>
             <View style={styles.taskDate}>
               <MaterialCommunityIcons name="calendar" size={16} color="#2196F3" />
-              <Text style={[styles.taskDateText, { color: isDarkMode ? '#B0B0B0' : '#2196F3' }]}>{item.dueDate ?
-              format(new Date(item.dueDate), 'PPp') : 'No due date'}</Text>
+              <Text style={[styles.taskDateText, { color: isDarkMode ? '#B0B0B0' : '#2196F3' }]}>
+                {item.dueDate && !isNaN(new Date(item.dueDate).getTime()) ? format(new Date(item.dueDate), 'PPp') : 'No due date'}
+              </Text>
             </View>
             <View style={[styles.taskPriority, { backgroundColor: getPriorityColor(item.priority) }]}>
               <Text style={styles.taskPriorityText}>{item.priority}</Text>
@@ -213,11 +214,17 @@ export default function IndexScreen() {
           {
             transform: [{ translateX: slideAnim }],
             backgroundColor: isDarkMode ? '#1E1E1E' : '#fff',
+            zIndex: 2,
           },
         ]}
       >
         <CustomDrawerContent closeDrawer={closeDrawer} />
       </Animated.View>
+
+      {/* Overlay when drawer is open */}
+      {isDrawerOpen && (
+        <TouchableOpacity style={styles.overlay} onPress={closeDrawer} activeOpacity={1} />
+      )}
 
       {/* Modal for displaying attachments */}
       <Modal visible={selectedAttachment !== null} transparent={true} onRequestClose={closeAttachmentViewer}>
@@ -350,6 +357,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: DRAWER_WIDTH,
     paddingTop: STATUSBAR_HEIGHT,
+    elevation: 5,
+    zIndex: 2,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 1,
   },
   deleteAction: {
     backgroundColor: '#FF0000',
