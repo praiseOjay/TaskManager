@@ -18,14 +18,14 @@ export default function SettingsScreen() {
   const handleResetDefaultTasks = () => {
     Alert.alert(
       "Reset Default Tasks",
-      "Are you sure you want to reload all 8 default sample tasks?",
+      "Are you sure you want to reload all 15 default sample tasks?",
       [
         { text: "Cancel", style: "cancel" },
         {
           text: "Reset",
           onPress: () => {
             resetDefaultTasks();
-            Alert.alert("Success", "All 8 default dummy tasks have been restored.");
+            Alert.alert("Success", "All 15 default dummy tasks have been restored.");
           }
         }
       ]

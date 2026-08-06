@@ -1,81 +1,110 @@
-# Task Manager App - React Native Version
+# Task Manager App - React Native & Expo Router
 
-A cross-platform mobile application for efficient task management, developed using React Native.
+A modern, cross-platform mobile application for efficient task management, developed using **React Native**, **Expo SDK 51**, and **Expo Router**.
 
-## Features
+---
 
-- Create, edit, and delete tasks
-- Categorize tasks and set priorities
-- Offline functionality with local data storage
-- File attachment support for tasks
-- Search and filter tasks
-- Dark mode support
-- Cross-platform compatibility (iOS and Android)
+## 📱 App Screenshots
 
-## Technologies Used
+| Home Screen (Dark Mode) | Add / Edit Task Screen |
+| :---: | :---: |
+| ![Home Screen](assets/screenshots/home_screen.png) | ![Add Task Screen](assets/screenshots/add_task.png) |
 
-- React Native
-- JavaScript
-- AsyncStorage for local data persistence
-- React Hooks and Context API for state management
-- React Navigation for routing
-- date-fns for date handling
+---
 
-## Installation
+## ✨ Features
 
-1. Ensure you have Node.js and React Native CLI installed on your machine
-2. Clone the repository:
-   ```
+- 📝 **Full Task Lifecycle**: Create, edit, inspect, complete, and delete tasks.
+- 🎨 **Adaptive Dark & Light Theme**: Toggle between dark mode and light mode with custom React Native Paper styling.
+- 🏷️ **Categorization & Priority**: Organize tasks by category (*Work, Personal, Shopping, Other*) and set priority levels (*High, Medium, Low*).
+- 📅 **Due Dates & Timers**: Set due dates with native date/time pickers and formatting.
+- 📎 **File & Image Attachments**: Attach images and document files directly to tasks.
+- 🔍 **Real-Time Search & Filtering**: Instant search across titles/descriptions with category and priority filtering.
+- 🔄 **Restore Default Tasks**: Instantly seed or reset to 15 pre-loaded sample tasks from Settings.
+- 💾 **Persistent Offline Storage**: Data persisted locally via `@react-native-async-storage/async-storage`.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Framework**: React Native (`v0.74.5`) & Expo (`v51.0.28`)
+- **Routing**: Expo Router (`v3.5.23`)
+- **UI Library**: React Native Paper (`v5.12.5`) & `@expo/vector-icons`
+- **State Management**: React Context API (`TaskContext` & `DrawerContext`)
+- **Storage**: `@react-native-async-storage/async-storage`
+- **Date Formatting**: `date-fns` & `@react-native-community/datetimepicker`
+- **Pickers**: `expo-document-picker` & `expo-image-picker`
+
+---
+
+## 📂 Project Structure
+
+```text
+TaskManager/
+├── App.js                     # Root entry point with GestureHandlerRootView
+├── app/                       # Expo Router file-based routes
+│   ├── _layout.js             # Master layout provider wrapper
+│   ├── index.js               # Main Home screen (Task list & search)
+│   ├── task-list.js           # Categorized Task list screen with filter menus
+│   ├── add-task.js            # Task creation screen with date & file pickers
+│   ├── edit-task/
+│   │   └── [id].js            # Task detail & editing screen
+│   └── settings.js            # Settings screen (Dark mode, Reset tasks)
+├── components/                # Reusable UI components
+│   ├── CustomDrawerContent.js # Animated side navigation drawer
+│   ├── SplashScreen.js        # Loading splash screen
+│   └── TaskList.js            # Task list item wrapper
+├── context/                   # React Context state management
+│   ├── TaskContext.js         # Core task data, CRUD logic, & default tasks
+│   └── DrawerContext.js       # Drawer open/close state context
+├── assets/                    # Static assets & app icons
+│   └── screenshots/           # Application screenshots for documentation
+├── package.json               # Dependencies & dependency overrides
+└── babel.config.js            # Babel configuration
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Ensure you have **Node.js** (v18+) and **npm** installed on your machine.
+
+### Installation
+
+1. Clone the repository:
+   ```bash
    git clone https://github.com/praiseOjay/TaskManager.git
-   ```
-3. Navigate to the project directory:
-   ```
    cd TaskManager
    ```
-4. Install dependencies:
-   ```
+
+2. Install dependencies:
+   ```bash
    npm install
    ```
-5. For iOS, install CocoaPods dependencies:
+
+3. Start the Expo development server:
+   ```bash
+   npx expo start
    ```
-   cd ios && pod install && cd ..
-   ```
-6. Start the app:
-   - For Android: `npx react-native run-android`
-   - For iOS: `npx react-native run-ios`
 
-## Project Structure
+4. Run on your preferred platform:
+   - **Android**: Press `a` in the terminal (or run `npm run android`)
+   - **iOS**: Press `i` in the terminal (or run `npm run ios`)
+   - **Web**: Press `w` in the terminal (or run `npm run web`)
 
-The app follows the MVVM (Model-View-ViewModel) architecture:
+---
 
-- `src/components/`: Reusable UI components
-- `src/screens/`: Main app screens
-- `src/contexts/`: React Context for state management
-- `src/services/`: Business logic and data operations
-- `src/utils/`: Utility functions and helpers
+## 👤 Author & Contact
 
-## Testing
+- **Author**: Praise Ojerinola
+- **Email**: Ojerinolapraise@gmail.com
+- **Repository**: [https://github.com/praiseOjay/TaskManager](https://github.com/praiseOjay/TaskManager)
 
-To run the tests:
+---
 
-```
-npm test
-```
-
-## Performance
-
-Performance metrics, including app startup time, frame render time, memory usage, and battery consumption, are available in the full project report.
-
-## Contributing
-
-Contributions to improve the app are welcome. Please feel free to submit issues or pull requests.
-
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-## Contact
-
-Praise Ojerinola - Ojerinolapraise@gmail.com
-
-Project Link: https://github.com/praiseOjay/TaskManager.git
