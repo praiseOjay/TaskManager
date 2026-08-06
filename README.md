@@ -8,7 +8,7 @@ A modern, cross-platform mobile application for efficient task management, devel
 
 | Home Screen (Dark Mode) | Add / Edit Task Screen |
 | :---: | :---: |
-| ![Home Screen](assets/screenshots/home_screen.png) | ![Add Task Screen](assets/screenshots/add_task.png) |
+| <img src="assets/screenshots/home_screen.png" width="300" alt="Home Screen" /> | <img src="assets/screenshots/add_task.png" width="300" alt="Add Task Screen" /> |
 
 ---
 
