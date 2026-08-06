@@ -35,6 +35,17 @@ const INITIAL_DUMMY_TASKS = [
   },
   {
     id: '2',
+    title: 'Review Code Pull Requests',
+    description: 'Perform thorough code review for backend feature branches and test API endpoints.',
+    completed: false,
+    priority: 'High',
+    category: 'Work',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 3), // 3 days from now
+    attachments: [],
+  },
+  {
+    id: '3',
     title: 'Buy Grocery Items',
     description: 'Pick up milk, fresh fruits, vegetables, and whole grain bread.',
     completed: false,
@@ -45,7 +56,29 @@ const INITIAL_DUMMY_TASKS = [
     attachments: [],
   },
   {
-    id: '3',
+    id: '4',
+    title: 'Order Essential Household Supplies',
+    description: 'Restock kitchen paper towels, laundry detergent, dish soap, and coffee beans.',
+    completed: false,
+    priority: 'Low',
+    category: 'Shopping',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 4), // 4 days from now
+    attachments: [],
+  },
+  {
+    id: '5',
+    title: 'Schedule Annual Dental Checkup',
+    description: 'Call dentist clinic to book routine inspection and teeth cleaning appointment.',
+    completed: false,
+    priority: 'High',
+    category: 'Personal',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 5), // 5 days from now
+    attachments: [],
+  },
+  {
+    id: '6',
     title: 'Morning Workout & Gym',
     description: '30-minute cardio session followed by core strength training.',
     completed: true,
@@ -53,6 +86,28 @@ const INITIAL_DUMMY_TASKS = [
     category: 'Personal',
     createdAt: new Date(),
     dueDate: new Date(),
+    attachments: [],
+  },
+  {
+    id: '7',
+    title: 'Read System Design Chapter 4',
+    description: 'Finish reading Chapter 4 on Distributed Caching and Database Sharding strategies.',
+    completed: true,
+    priority: 'Medium',
+    category: 'Other',
+    createdAt: new Date(),
+    dueDate: new Date(),
+    attachments: [],
+  },
+  {
+    id: '8',
+    title: 'Plan Weekend Getaway',
+    description: 'Research eco-resort accommodations and nearby scenic hiking trails.',
+    completed: false,
+    priority: 'Low',
+    category: 'Personal',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 7), // 7 days from now
     attachments: [],
   },
 ];
