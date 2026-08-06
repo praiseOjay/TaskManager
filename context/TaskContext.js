@@ -241,6 +241,12 @@ export const TaskProvider = ({ children }) => {
     saveTasks([]);
   };
 
+  // Function to reset tasks to initial default dummy tasks
+  const resetDefaultTasks = () => {
+    setTasks(INITIAL_DUMMY_TASKS);
+    saveTasks(INITIAL_DUMMY_TASKS);
+  };
+
   // Function to toggle dark mode and save preference
   const toggleDarkMode = async () => {
     const newDarkMode = !isDarkMode;
@@ -292,6 +298,7 @@ export const TaskProvider = ({ children }) => {
       filterBy,
       setFilterBy,
       clearAllTasks,
+      resetDefaultTasks,
       isDarkMode,
       toggleDarkMode
     }}>

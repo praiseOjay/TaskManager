@@ -12,7 +12,25 @@ import { useTaskContext } from '../context/TaskContext';
 export default function SettingsScreen() {
   // Initialize router and access task context
   const router = useRouter();
-  const { isDarkMode, toggleDarkMode, clearAllTasks } = useTaskContext();
+  const { isDarkMode, toggleDarkMode, clearAllTasks, resetDefaultTasks } = useTaskContext();
+
+  // Handler for resetting default tasks
+  const handleResetDefaultTasks = () => {
+    Alert.alert(
+      "Reset Default Tasks",
+      "Are you sure you want to reload all 8 default sample tasks?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reset",
+          onPress: () => {
+            resetDefaultTasks();
+            Alert.alert("Success", "All 8 default dummy tasks have been restored.");
+          }
+        }
+      ]
+    );
+  };
 
   // Handler for clearing all tasks
   const handleClearAllTasks = () => {
@@ -49,6 +67,12 @@ export default function SettingsScreen() {
         <Text style={[styles.settingText, { color: isDarkMode ? '#fff' : '#000' }]}>Dark Mode</Text>
         <Switch value={isDarkMode} onValueChange={toggleDarkMode} />
       </View>
+
+      {/* Reset default dummy tasks button */}
+      <TouchableOpacity style={styles.settingItem} onPress={handleResetDefaultTasks}>
+        <Text style={[styles.settingText, { color: isDarkMode ? '#fff' : '#000' }]}>Restore Default Tasks</Text>
+        <MaterialCommunityIcons name="refresh" size={24} color={isDarkMode ? '#fff' : '#000'} />
+      </TouchableOpacity>
 
       {/* Clear all tasks button */}
       <TouchableOpacity style={styles.settingItem} onPress={handleClearAllTasks}>
