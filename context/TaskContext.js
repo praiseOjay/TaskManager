@@ -110,6 +110,83 @@ const INITIAL_DUMMY_TASKS = [
     dueDate: new Date(Date.now() + 86400000 * 7), // 7 days from now
     attachments: [],
   },
+  {
+    id: '9',
+    title: 'Update Mobile App Dependencies',
+    description: 'Upgrade Expo core packages and test compatibility with React Native 0.74.',
+    completed: false,
+    priority: 'High',
+    category: 'Work',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 3), // 3 days from now
+    attachments: [],
+  },
+  {
+    id: '10',
+    title: 'Prepare Quarterly Budget Report',
+    description: 'Analyze Q2 expenses and draft financial forecast report for upcoming Q3 planning.',
+    completed: false,
+    priority: 'Medium',
+    category: 'Work',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 6), // 6 days from now
+    attachments: [],
+  },
+  {
+    id: '11',
+    title: 'Purchase Birthday Gift for Alex',
+    description: 'Find wireless noise-canceling headphones or smartwatch deal online.',
+    completed: false,
+    priority: 'High',
+    category: 'Shopping',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 4), // 4 days from now
+    attachments: [],
+  },
+  {
+    id: '12',
+    title: 'Pay Monthly Utility Bills',
+    description: 'Settle electricity, water supply, and high-speed fiber internet subscription.',
+    completed: true,
+    priority: 'High',
+    category: 'Personal',
+    createdAt: new Date(),
+    dueDate: new Date(),
+    attachments: [],
+  },
+  {
+    id: '13',
+    title: 'Organize Workspace Desk & Cables',
+    description: 'Clear desk clutter, route monitor cables, and wipe down workstations.',
+    completed: false,
+    priority: 'Low',
+    category: 'Other',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 8), // 8 days from now
+    attachments: [],
+  },
+  {
+    id: '14',
+    title: 'Car Maintenance & Oil Change',
+    description: 'Schedule routine vehicle servicing, oil change, and tire rotation at service center.',
+    completed: false,
+    priority: 'Medium',
+    category: 'Personal',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 5), // 5 days from now
+    attachments: [],
+  },
+  {
+    id: '15',
+    title: 'Listen to Tech Podcast Episode',
+    description: 'Episode 142: The Future of Cross-Platform Mobile Engineering & AI Workflows.',
+    completed: true,
+    priority: 'Low',
+    category: 'Other',
+    createdAt: new Date(),
+    dueDate: new Date(),
+    attachments: [],
+  },
 ];
 
 // TaskProvider component to wrap the app and provide task management functionality
