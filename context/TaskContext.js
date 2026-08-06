@@ -20,6 +20,43 @@ const safeParse = (dateInput) => {
   return isNaN(date.getTime()) ? null : date;
 };
 
+// Initial default dummy tasks for new app sessions
+const INITIAL_DUMMY_TASKS = [
+  {
+    id: '1',
+    title: 'Complete Project Presentation',
+    description: 'Prepare the slides and review key architectural updates with the team.',
+    completed: false,
+    priority: 'High',
+    category: 'Work',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000 * 2), // 2 days from now
+    attachments: [],
+  },
+  {
+    id: '2',
+    title: 'Buy Grocery Items',
+    description: 'Pick up milk, fresh fruits, vegetables, and whole grain bread.',
+    completed: false,
+    priority: 'Medium',
+    category: 'Shopping',
+    createdAt: new Date(),
+    dueDate: new Date(Date.now() + 86400000), // 1 day from now
+    attachments: [],
+  },
+  {
+    id: '3',
+    title: 'Morning Workout & Gym',
+    description: '30-minute cardio session followed by core strength training.',
+    completed: true,
+    priority: 'Low',
+    category: 'Personal',
+    createdAt: new Date(),
+    dueDate: new Date(),
+    attachments: [],
+  },
+];
+
 // TaskProvider component to wrap the app and provide task management functionality
 export const TaskProvider = ({ children }) => {
   // State variables for tasks, sorting, filtering, and dark mode
@@ -40,16 +77,23 @@ export const TaskProvider = ({ children }) => {
       const storedTasks = await AsyncStorage.getItem('tasks');
       if (storedTasks) {
         const parsedTasks = JSON.parse(storedTasks);
-        const safeTasksWithDates = parsedTasks.map(task => ({
-          ...task,
-          createdAt: safeParse(task.createdAt),
-          dueDate: safeParse(task.dueDate),
-          attachments: Array.isArray(task.attachments) ? task.attachments : []
-        }));
-        setTasks(safeTasksWithDates);
+        if (parsedTasks.length > 0) {
+          const safeTasksWithDates = parsedTasks.map(task => ({
+            ...task,
+            createdAt: safeParse(task.createdAt),
+            dueDate: safeParse(task.dueDate),
+            attachments: Array.isArray(task.attachments) ? task.attachments : []
+          }));
+          setTasks(safeTasksWithDates);
+          return;
+        }
       }
+      // If no stored tasks exist, load initial dummy tasks
+      setTasks(INITIAL_DUMMY_TASKS);
+      saveTasks(INITIAL_DUMMY_TASKS);
     } catch (error) {
       console.error('Error loading tasks:', error);
+      setTasks(INITIAL_DUMMY_TASKS);
     }
   };
 
